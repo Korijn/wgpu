@@ -77,4 +77,6 @@ script:
       make example-compute example-triangle VERBOSE=1;
     fi
   - if [[ $TRAVIS_RUST_VERSION == "nightly" ]] && [[ $TRAVIS_OS_NAME != "windows" ]]; then make VERBOSE=1; fi
-  - tree  # debug
+  - if [[ $TRAVIS_OS_NAME == "windows" ]]; then cmd.exe /C 'tree'; fi
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then tree; fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'; fi
