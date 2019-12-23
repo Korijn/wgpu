@@ -39,9 +39,11 @@ matrix:
 
 addons:
   apt:
+    update: true
     packages:
     - cmake
     - libglfw3-dev
+    - tree
   homebrew:
     update: true
     packages:
