@@ -78,6 +78,11 @@ script:
     fi
   - if [[ $TRAVIS_RUST_VERSION == "nightly" ]] && [[ $TRAVIS_OS_NAME != "windows" ]]; then make VERBOSE=1; fi
   - make lib-native lib-remote
-  - if [[ $TRAVIS_OS_NAME == "windows" ]]; then cmd.exe /C 'tree'; fi
+  - if [[ $TRAVIS_OS_NAME == "windows" ]]; then cmd.exe /C 'tree /F'; fi
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then tree; fi
   - if [[ $TRAVIS_OS_NAME == "osx" ]]; then find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'; fi
+  - mkdir dist
+  - if [[ $TRAVIS_OS_NAME == "windows" ]]; then cp target/debug/*.dll dist/.; fi
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then cp target/debug/*.so dist/.; fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then cp target/debug/*.dylib dist/.; fi
+  - if [[ $TRAVIS_OS_NAME == "windows" ]]; then ls -la dist; fi
