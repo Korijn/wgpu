@@ -85,4 +85,4 @@ script:
   - if [[ $TRAVIS_OS_NAME == "windows" ]]; then cp target/debug/*.dll dist/.; fi
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then cp target/debug/*.so dist/.; fi
   - if [[ $TRAVIS_OS_NAME == "osx" ]]; then cp target/debug/*.dylib dist/.; fi
-  - if [[ $TRAVIS_OS_NAME == "windows" ]]; then ls -la dist; fi
+  - ls -la dist
