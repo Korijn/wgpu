@@ -82,12 +82,12 @@ impl SwapChainDescriptor {
     pub(crate) fn to_hal(
         &self,
         num_frames: u32,
-        features: &Features,
+        features: Features,
     ) -> hal::window::SwapchainConfig {
         let mut config = hal::window::SwapchainConfig::new(
             self.width,
             self.height,
-            conv::map_texture_format(self.format, *features),
+            conv::map_texture_format(self.format, features),
             num_frames,
         );
         //TODO: check for supported
@@ -153,7 +153,7 @@ impl<F: IdentityFilter<TextureViewId>> Global<F> {
                 }
                 Err(e) => {
                     log::warn!("acquire_image() failed ({:?}), reconfiguring swapchain", e);
-                    let desc = sc.desc.to_hal(sc.num_frames, &device.features);
+                    let desc = sc.desc.to_hal(sc.num_frames, device.features);
                     unsafe {
                         suf.configure_swapchain(&device.raw, desc).unwrap();
                         suf.acquire_image(FRAME_TIMEOUT_MS * 1_000_000).unwrap()
@@ -167,7 +167,7 @@ impl<F: IdentityFilter<TextureViewId>> Global<F> {
                 image,
                 source_id: Stored {
                     value: swap_chain_id,
-                    ref_count: sc.life_guard.ref_count.clone(),
+                    ref_count: sc.life_guard.add_ref(),
                 },
                 framebuffers: SmallVec::new(),
             },
@@ -185,7 +185,7 @@ impl<F: IdentityFilter<TextureViewId>> Global<F> {
             },
             life_guard: LifeGuard::new(),
         };
-        let ref_count = view.life_guard.ref_count.clone();
+        let ref_count = view.life_guard.add_ref();
         let view_id = hub
             .texture_views
             .register_identity(view_id_in, view, &mut token);

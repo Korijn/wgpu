@@ -35,7 +35,7 @@ impl<B: hal::Backend> CommandPool<B> {
             if index < lowest_active_index {
                 let cmd_buf = self.pending.swap_remove(i);
                 log::trace!(
-                    "recycling comb submitted in {} when {} is done",
+                    "recycling comb submitted in {} when {} is lowest active",
                     index,
                     lowest_active_index,
                 );
@@ -138,6 +138,16 @@ impl<B: hal::Backend> CommandAllocator<B> {
         }
 
         pool.available.pop().unwrap()
+    }
+
+    pub fn discard(&self, mut cmd_buf: CommandBuffer<B>) {
+        cmd_buf.trackers.clear();
+        self.inner
+            .lock()
+            .pools
+            .get_mut(&cmd_buf.recorded_thread_id)
+            .unwrap()
+            .recycle(cmd_buf);
     }
 
     pub fn after_submit(&self, mut cmd_buf: CommandBuffer<B>, submit_index: SubmissionIndex) {

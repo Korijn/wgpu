@@ -83,11 +83,11 @@ deploy:
   provider: releases
   api_key:
     secure: en8p8ejLUCas53qON+gQnhl/ZNkAkqOOCnWP853wngrsgLe9zZKS0JME2mkSqu5v0xo0A3WPx2u8fUCDFILca2li2UgE78JNguEJJ6P/veZ4kgwHsTdUEiww89unf+4xPB7ZWTbgUc4ShtYRZh/glUiYwFj2s1DI7czmVWrqOK92G26Eh1Dc+JN+d/DzRVaArPfmVQqYSuu2495pmkHfm7AgS80SAqMg8vZsu9xaRGr4CeeKAoyVUFMbCorMGXmkai2Jr2ROxbgm6xKmLLPCHAAmCjdi7XDPJIAihFmYs/GNQTtzI7P7EB6KuyIYBbrlg8t0YpA6VN+050EjGJXsGvsqmHh9epNt9Gqq9xZGLF+Pv5gVsK+fv+jCJ78D7z71iZ7mw0DH0eyZbOa+Js+1RXVaoF/3tJAV8teM4fq6FHJeoUGY4EgwynHzzzZh6ROFHH5GepdjxHeZztlqVQpsikchah/Ps/eCDPjxU/V+2nxeypdbp96JCXcZo+lX9p3hfEK4p9U6BcIAs+ZuogRT9v6OMGav5xDlpoxIzuvYLUW8A/3n6jp2h/zkPhZ1qE8b/MS/fa+xubs64ONPp2M+YVxZgXmpMMeE4s3b8YB63vYkj2xzFEOgJwK039vrSrucbBaU8kcheZqxJ4hLdVLfiTN5MOsnti39abI3j8OznVo=
-  file_glob: true
-  file: dist/wgpu-*.zip
   skip_cleanup: true
   overwrite: true
+  file_glob: true
+  file: dist/wgpu-*.zip
   on:
+    repo: gfx-rs/wgpu
     tags: true
-    condition: $TRAVIS_RUST_VERSION == "stable" && $TRAVIS_BRANCH == $TRAVIS_TAG
-    skip_cleanup: true
+    condition: $TRAVIS_RUST_VERSION == "stable" && $TRAVIS_BRANCH == $TRAVIS_TAG && ${TRAVIS_TAG::1} == "v"

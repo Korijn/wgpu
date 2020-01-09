@@ -174,12 +174,7 @@ impl<F> Global<F> {
         );
         assert!(src_buffer.usage.contains(BufferUsage::INDIRECT));
 
-        let barriers = src_pending.map(|pending| hal::memory::Barrier::Buffer {
-            states: pending.to_states(),
-            target: &src_buffer.raw,
-            families: None,
-            range: None .. None,
-        });
+        let barriers = src_pending.map(|pending| pending.into_hal(src_buffer));
 
         unsafe {
             pass.raw.pipeline_barrier(
@@ -210,9 +205,9 @@ impl<F> Global<F> {
         }
 
         // Rebind resources
-        if pass.binder.pipeline_layout_id != Some(pipeline.layout_id.clone()) {
+        if pass.binder.pipeline_layout_id != Some(pipeline.layout_id) {
             let pipeline_layout = &pipeline_layout_guard[pipeline.layout_id];
-            pass.binder.pipeline_layout_id = Some(pipeline.layout_id.clone());
+            pass.binder.pipeline_layout_id = Some(pipeline.layout_id);
             pass.binder
                 .reset_expectations(pipeline_layout.bind_group_layout_ids.len());
             let mut is_compatible = true;
