@@ -88,6 +88,6 @@ deploy:
   file_glob: true
   file: dist/wgpu-*.zip
   on:
-    repo: gfx-rs/wgpu
+    repo: Korijn/wgpu
     tags: true
     condition: $TRAVIS_RUST_VERSION == "stable" && $TRAVIS_BRANCH == $TRAVIS_TAG && ${TRAVIS_TAG::1} == "v"
