@@ -21,10 +21,8 @@ matrix:
     # Windows 64bit
     - os: windows
       rust: stable
-      env: ARCH=64
     - os: windows
       rust: nightly
-      env: ARCH=64
     - os: windows
       rust: stable
       env: ARCH=32
@@ -67,8 +65,8 @@ branches:
 
 before_install:
 - if [[ $TRAVIS_OS_NAME == "windows" ]]; then choco install make; fi
-- if [[ $TRAVIS_RUST_VERSION != "nightly" ]] && [[ $ARCH == "64" ]] && [[ $TRAVIS_OS_NAME == "windows" ]]; then rustup default stable-msvc; fi
-- if [[ $TRAVIS_RUST_VERSION == "nightly" ]] && [[ $ARCH == "64" ]] && [[ $TRAVIS_OS_NAME == "windows" ]]; then rustup default nightly-msvc; fi
+- if [[ $TRAVIS_RUST_VERSION != "nightly" ]] && [[ $ARCH != "32" ]] && [[ $TRAVIS_OS_NAME == "windows" ]]; then rustup default stable-msvc; fi
+- if [[ $TRAVIS_RUST_VERSION == "nightly" ]] && [[ $ARCH != "32" ]] && [[ $TRAVIS_OS_NAME == "windows" ]]; then rustup default nightly-msvc; fi
 - if [[ $TRAVIS_RUST_VERSION != "nightly" ]] && [[ $ARCH == "32" ]] && [[ $TRAVIS_OS_NAME == "windows" ]]; then rustup default stable-i686-pc-windows-msvc; fi
 - if [[ $TRAVIS_RUST_VERSION == "nightly" ]] && [[ $ARCH == "32" ]] && [[ $TRAVIS_OS_NAME == "windows" ]]; then rustup default nightly-i686-pc-windows-msvc; fi
 
@@ -79,7 +77,7 @@ script:
   - if [[ $TRAVIS_OS_NAME == "osx" ]]; then (cd wgpu-native && cargo check --features vulkan-portability); fi
   - if [[ $TRAVIS_OS_NAME == "linux" ]] && [[ $MANYLINUX != "1" ]]; then cargo check --release; fi
   - if [[ $TRAVIS_RUST_VERSION == "nightly" ]] && [[ $MANYLINUX != "1" ]]; then cargo +nightly install cbindgen; fi
-  - if [[ $TRAVIS_OS_NAME == "windows" ]] && [[ $ARCH == "64" ]]; then
+  - if [[ $TRAVIS_OS_NAME == "windows" ]] && [[ $ARCH != "32" ]]; then
       export GENERATOR_PLATFORM=-DCMAKE_GENERATOR_PLATFORM=x64;
     else
       export GENERATOR_PLATFORM=;

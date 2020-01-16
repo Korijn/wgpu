@@ -21,10 +21,14 @@ else
 	CHECK_TARGET_FLAG=--target $(TARGET)
 endif
 
+ifneq ($(ARCH),32)
+	ARCH=64
+endif
+
 ifeq ($(OS),Windows_NT)
 	CLEAN_FFI_DIR=del $(FFI_DIR)\*.* /Q /S
 	CREATE_BUILD_DIR=mkdir $(BUILD_DIR)
-	ifneq ($(ARCH),32)
+	ifeq ($(ARCH),64)
 		GENERATOR_PLATFORM=-DCMAKE_GENERATOR_PLATFORM=x64
 	else
 		GENERATOR_PLATFORM=
@@ -43,7 +47,11 @@ else
 	ZIP_TOOL=zip
 	ifeq ($(UNAME_S),Linux)
 		LIB_EXTENSION=so
-		OS_NAME=linux
+		ifeq ($(MANYLINUX),1)
+			OS_NAME=manylinux
+		else
+			OS_NAME=linux
+		endif
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		LIB_EXTENSION=dylib
@@ -65,7 +73,7 @@ package: lib-native lib-native-release
 	mkdir -p dist
 	echo "$(GIT_TAG_FULL)" > dist/commit-sha
 	for RELEASE in debug release; do \
-		ARCHIVE=wgpu-$$RELEASE-$(OS_NAME)-$(GIT_TAG).zip; \
+		ARCHIVE=wgpu-$$RELEASE-$(OS_NAME)-$(ARCH)-$(GIT_TAG).zip; \
 		rm -f dist/$$ARCHIVE; \
 		if [ $(ZIP_TOOL) = zip ]; then \
 			zip -j dist/$$ARCHIVE target/$$RELEASE/libwgpu_*.$(LIB_EXTENSION) ffi/*.h dist/commit-sha; \
