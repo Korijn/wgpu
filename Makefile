@@ -88,8 +88,9 @@ package: lib-native lib-native-release
 # pollute the host's working directory and that the resulting files are not owned
 # by the root user
 manylinux:
-	CID=$$(docker create -t -w /tmp/wgpu -v $$PWD:/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
+	CID=$$(docker create -t -e MANYLINUX -w /tmp/wgpu -v $$PWD:/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
 	  cp -r /tmp/src/. . && \
+	  rm -rf ./dist && \
 	  export PATH=/root/.cargo/bin:\$$PATH && \
 	  export USER=root && \
 	  curl https://sh.rustup.rs -sSf | sh -s -- -y && \
